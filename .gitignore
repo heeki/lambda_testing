@@ -1,0 +1,11 @@
+# directories
+.vscode
+etc
+src/__pycache__
+test/__pycache__
+tmp
+
+# files
+.coverage
+iac/*_output.yaml
+notes.md
