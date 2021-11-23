@@ -4,16 +4,19 @@ Transform: AWS::Serverless-2016-10-31
 Globals:
   Function:
     Layers:
-      - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:xray-python3:1'
+      - !Ref pLayerArn
     MemorySize: !Ref pFnMemory
     Runtime: python3.9
     Timeout: !Ref pFnTimeout
-    Tracing: Active
 Parameters:
   pFnMemory:
     Type: Number
   pFnTimeout:
     Type: Number
+  pSigningConfigArn:
+    Type: String
+  pLayerArn:
+    Type: String
 Resources:
   # Lambda
   FnRole:
@@ -48,24 +51,13 @@ Resources:
                   - logs:PutLogEvents
                   - logs:DescribeLogStreams
                 Resource: 'arn:aws:logs:*:*:log-group:*:*'
-        - PolicyName: xray
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - xray:PutTraceSegments
-                  - xray:PutTelemetryRecords
-                  - xray:GetSamplingRules
-                  - xray:GetSamplingTargets
-                  - xray:GetSamplingStatisticSummaries
-                Resource: '*'
   Fn:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ../src
       Handler: fn.handler
       Role: !GetAtt FnRole.Arn
+      CodeSigningConfigArn: !Ref pSigningConfigArn
   FnLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:

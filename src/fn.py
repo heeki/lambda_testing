@@ -1,7 +1,7 @@
 import boto3
 import json
-from aws_xray_sdk.core import xray_recorder
-from aws_xray_sdk.core import patch_all
+# from aws_xray_sdk.core import xray_recorder
+# from aws_xray_sdk.core import patch_all
 
 # initialization
 session = boto3.session.Session()
@@ -36,6 +36,7 @@ def handler(event, context):
         "log_group_name": context.log_group_name,
         "log_stream_name": context.log_stream_name
     }
+    output["message"] = "hello world"
     print(json.dumps(output))
     response = build_response(200, output)
     return response

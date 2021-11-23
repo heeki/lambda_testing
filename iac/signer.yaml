@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Lambda test, coverage, and signing practices
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  pPlatformId:
+    Type: String
+Resources:
+  Signer:
+    Type: AWS::Signer::SigningProfile
+    Properties:
+      PlatformId: !Ref pPlatformId
+      SignatureValidityPeriod:
+        Type: DAYS
+        Value: 31
+  SigningConfig:
+    Type: AWS::Lambda::CodeSigningConfig
+    Properties:
+      AllowedPublishers:
+        SigningProfileVersionArns:
+          - !GetAtt Signer.ProfileVersionArn
+      CodeSigningPolicies:
+        UntrustedArtifactOnDeployment: Enforce
+      Description: testing function and layer signing
+Outputs:
+  outSignerArn:
+    Value: !GetAtt Signer.ProfileVersionArn
+  outSigningConfigArn:
+    Value: !Ref SigningConfig
