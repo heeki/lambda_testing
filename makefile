@@ -14,6 +14,8 @@ lambda.deploy:
 	sam deploy -t ${LAMBDA_OUTPUT} --stack-name ${LAMBDA_STACK} --parameter-overrides ${LAMBDA_PARAMS} --capabilities CAPABILITY_NAMED_IAM
 lambda.deploy.signed:
 	sam deploy -t ${LAMBDA_OUTPUT} --stack-name ${LAMBDA_STACK} --parameter-overrides ${LAMBDA_PARAMS} --signing-profiles ${SIGNING_PROFILES} --capabilities CAPABILITY_NAMED_IAM
+lambda.continue.rollback:
+	aws cloudformation continue-update-rollback --stack-name ${LAMBDA_STACK}
 
 lambda.local:
 	sam local invoke -t ${LAMBDA_TEMPLATE} --parameter-overrides ${LAMBDA_PARAMS} --env-vars etc/envvars.json -e etc/event.json Fn | jq
